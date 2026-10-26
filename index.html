@@ -1,0 +1,900 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>爱果相册</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: an Apple-style product story on a light page. A slow aurora of the icon's colours
+   sits behind everything; content lives on frosted-glass panels; the product shot and the
+   glass lab stay dark like Apple's product photography. Centred 1080px column throughout. */
+:root {
+  color-scheme: light;
+  --ink: #f3f4f8;          /* page */
+  --ink-2: rgba(255,255,255,.55);   /* glass surface */
+  --line: rgba(24,28,60,.09);
+  --fg: #1d1d1f;
+  --dim: #6e6e73;
+  --paper: transparent;    /* bands now sit on the aurora too */
+  --paper-fg: #1d1d1f;
+  --paper-dim: #6e6e73;
+  --sky: #40beff;          /* from the app icon */
+  --indigo: #5856d6;
+  --link: #0071e3;
+  --sun: #ffb84d;
+  /* frosted glass */
+  --glass: rgba(255,255,255,.55);
+  --glass-strong: rgba(255,255,255,.72);
+  --glass-rim: rgba(255,255,255,.85);
+  --glass-blur: blur(24px) saturate(180%);
+  --glass-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 0 0 1px rgba(255,255,255,.6) inset, 0 12px 40px rgba(40,50,110,.10), 0 2px 6px rgba(40,50,110,.05);
+  --display: "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", system-ui, sans-serif;
+  --body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --col: 1080px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--fg); font: 17px/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: rgba(243,244,248,.8); }
+/* Aurora: soft blobs of the icon's colours drifting behind the glass */
+.aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.aurora i { position: absolute; width: 55vmax; aspect-ratio: 1; border-radius: 50%; filter: blur(70px); opacity: .8; animation: aur 26s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { left: -14vmax; top: -16vmax; background: radial-gradient(circle, #ffb3ae, transparent 65%); }
+.aurora i:nth-child(2) { right: -16vmax; top: -8vmax; background: radial-gradient(circle, #a9d4ff, transparent 65%); animation-duration: 31s; animation-delay: -8s; }
+.aurora i:nth-child(3) { left: 18vmax; top: 30vmax; background: radial-gradient(circle, #fff0a3, transparent 65%); opacity: .45; animation-duration: 35s; animation-delay: -14s; }
+.aurora i:nth-child(4) { right: -6vmax; bottom: -14vmax; background: radial-gradient(circle, #d6b8ff, transparent 65%); animation-duration: 29s; animation-delay: -4s; }
+.aurora i:nth-child(5) { left: -18vmax; bottom: -20vmax; background: radial-gradient(circle, #b4f0c4, transparent 65%); animation-duration: 33s; animation-delay: -18s; }
+.aurora i:nth-child(6) { left: 40vmax; top: -22vmax; background: radial-gradient(circle, #ffd2a1, transparent 65%); opacity: .45; animation-duration: 37s; animation-delay: -10s; }
+@keyframes aur { to { transform: translate(8vmax, 6vmax) scale(1.15); } }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: var(--col); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font: 600 13px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.grad { background: linear-gradient(100deg, #ff6a5c, #ff9f0a 22%, #e0b100 38%, #34c759 54%, #0a84ff 72%, #8e5cf0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- Nav: frosted bar ---------- */
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(0,0,0,.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(255,255,255,.08); }
+nav .wrap { display: flex; align-items: center; gap: 28px; height: 52px; }
+nav .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; color: var(--fg); }
+nav .brand canvas { width: 22px; height: 22px; }
+nav .links { display: flex; gap: 24px; margin-left: auto; font-size: 13px; }
+nav .links a { color: #d2d2d7; }
+nav .links a:hover { color: #fff; text-decoration: none; }
+@media (max-width: 640px) { nav .links a:not(.keep) { display: none; } }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: 72px 0; text-align: center; }
+.hero .eyebrow { margin-bottom: 18px; }
+.hero h1 { font-size: clamp(40px, 7.4vw, 88px); font-weight: 900; line-height: 1.06; letter-spacing: -.035em; }
+.hero .lede { max-width: 620px; margin: 22px auto 0; color: var(--dim); font-size: clamp(17px, 2.1vw, 21px); }
+.hero .ctas { display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 0; cursor: pointer; }
+.btn.primary { background: var(--link); color: #fff; }
+.btn.ghost { color: var(--link); background: transparent; box-shadow: inset 0 0 0 1.5px var(--link); }
+.btn:hover { text-decoration: none; filter: brightness(1.1); }
+
+/* Product shot that straightens and grows as you scroll */
+.stage { perspective: 1800px; padding-block: 56px 40px; }
+.mock-wrap { --p: 0; max-width: 1040px; margin: 0 auto; transform-origin: 50% 0;
+  transform: rotateX(calc((1 - var(--p)) * 16deg)) scale(calc(.9 + var(--p) * .1)) translateY(calc((1 - var(--p)) * 10px)); will-change: transform; }
+.halo { position: absolute; inset: 10% 5% -6%; z-index: -1; filter: blur(70px); opacity: .55;
+  background: radial-gradient(40% 50% at 30% 40%, var(--sky), transparent 70%), radial-gradient(40% 50% at 70% 60%, var(--indigo), transparent 70%); }
+
+/* ---------- The app, drawn in CSS ---------- */
+.app { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 16px; overflow: hidden; background: #000;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 120px rgba(0,0,0,.6); font-family: var(--body); }
+.app .titlebar { position: absolute; inset: 0 0 auto; height: 4.2%; display: flex; align-items: center; gap: 1%; padding-left: 1.4%;
+  font-size: clamp(7px, 1vw, 12px); color: #c7c7cc; background: rgba(40,40,46,.6); z-index: 5; }
+.app .titlebar canvas { height: 62%; aspect-ratio: 1; }
+.app .amb { position: absolute; left: 0; top: 0; bottom: 0; width: 21%; overflow: hidden; }
+.app .amb i { position: absolute; width: 140%; aspect-ratio: 1; border-radius: 50%; background-size: cover; filter: blur(18px) saturate(180%); opacity: .95;
+  animation: drift 16s ease-in-out infinite alternate; }
+.app .amb i:nth-child(2) { animation-duration: 21s; animation-delay: -5s; }
+.app .amb i:nth-child(3) { animation-duration: 25s; animation-delay: -9s; }
+@keyframes drift { from { transform: translate(-8%, -4%) scale(1); } to { transform: translate(10%, 6%) scale(1.15); } }
+.app .side { position: absolute; left: .9%; top: 5.2%; bottom: 1.4%; width: 18.6%; border-radius: clamp(8px, 1.8vw, 22px); z-index: 4;
+  background: rgba(30,30,34,.26); -webkit-backdrop-filter: blur(10px) saturate(200%); backdrop-filter: blur(10px) saturate(200%);
+  box-shadow: inset 0 1px .5px rgba(255,255,255,.55), inset 0 0 18px rgba(255,255,255,.1), 0 10px 30px rgba(0,0,0,.4);
+  padding: 2.2% 1.2%; font-size: clamp(6px, .95vw, 12px); color: #fff; display: flex; flex-direction: column; gap: 1.2%; }
+.app .side b { font-size: 1.15em; padding: 0 6% 4%; display: flex; gap: 6%; align-items: center; }
+.app .side b canvas { width: 1.4em; height: 1.4em; }
+.app .side span { padding: 3.5% 6%; border-radius: 10px; display: flex; justify-content: space-between; color: rgba(255,255,255,.88); }
+.app .side span.on { background: rgba(255,255,255,.16); box-shadow: inset 0 1px .5px rgba(255,255,255,.35); font-weight: 700; }
+.app .side span em { font-style: normal; color: rgba(255,255,255,.55); font-family: var(--mono); font-size: .9em; }
+.app .side small { color: rgba(255,255,255,.55); padding: 5% 6% 1%; font-size: .85em; }
+.app .main { position: absolute; left: 21%; right: 0; top: 4.2%; bottom: 0; padding: 0 1.4%; overflow: hidden; }
+.app .main h4 { margin: 4.5% 0 .2%; font: 900 clamp(12px, 2.6vw, 32px)/1.1 var(--display); color: #fff; letter-spacing: -.02em; }
+.app .main .sub { color: #8e8e93; font-size: clamp(6px, .95vw, 12px); }
+.app .main h5 { margin: 2.2% 0 1%; font: 700 clamp(8px, 1.4vw, 17px)/1 var(--display); color: #fff; }
+.app .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; }
+.app .grid i { aspect-ratio: 1; background-size: cover; position: relative; }
+.app .grid i.v::after { content: ""; position: absolute; right: 6%; bottom: 6%; width: 14%; aspect-ratio: 1; border-radius: 50%;
+  background: rgba(0,0,0,.25) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M3.5 2.5l4 2.5-4 2.5z' fill='white'/%3E%3C/svg%3E") center/70% no-repeat;
+  box-shadow: inset 0 1px .5px rgba(255,255,255,.6); }
+.app .grid i.in { box-shadow: inset 0 0 0 3px var(--link); filter: brightness(.85); }
+.app .grid i.in::before { content: ""; position: absolute; right: 6%; top: 6%; width: 15%; aspect-ratio: 1; border-radius: 50%; background: var(--link)
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.4 2.4L9.5 3.8' stroke='white' stroke-width='1.8' fill='none'/%3E%3C/svg%3E") center/65% no-repeat;
+  box-shadow: 0 0 0 1.5px #fff; }
+.app .seg { position: absolute; bottom: 3.5%; left: 60.5%; transform: translateX(-50%); display: flex; gap: 2px; padding: .5%; border-radius: 999px; z-index: 4;
+  background: rgba(40,40,46,.5); -webkit-backdrop-filter: blur(8px) saturate(190%); backdrop-filter: blur(8px) saturate(190%);
+  box-shadow: inset 0 1px .5px rgba(255,255,255,.5), 0 8px 24px rgba(0,0,0,.4); font-size: clamp(6px, .95vw, 12px); color: #aeaeb2; }
+.app .seg span { padding: .6em 1.4em; border-radius: 999px; font-weight: 700; }
+.app .seg span.on { background: rgba(255,255,255,.18); color: #fff; box-shadow: inset 0 1px .5px rgba(255,255,255,.4); }
+.app .sel { position: absolute; right: 1.6%; top: 6.2%; z-index: 4; padding: .55em 1.3em; border-radius: 999px; font-size: clamp(6px, .95vw, 12px); font-weight: 700; color: #fff;
+  background: rgba(40,40,46,.5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: inset 0 1px .5px rgba(255,255,255,.5), 0 6px 18px rgba(0,0,0,.4); }
+
+/* ---------- Problem: lines light up as you scroll ---------- */
+.problem { padding-block: 140px 120px; }
+.problem .eyebrow { margin-bottom: 26px; }
+.problem p.line { font: 700 clamp(28px, 4.6vw, 56px)/1.25 var(--display); letter-spacing: -.02em; color: var(--fg);
+  opacity: var(--o, .28); transition: opacity .5s ease; margin-bottom: .55em; max-width: 22ch; }
+.problem p.line .num { font-family: var(--mono); font-weight: 600; letter-spacing: -.04em; }
+
+/* ---------- Numbers ---------- */
+.stats { padding-block: 20px 140px; }
+.stats .row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.stats .cell { padding: 30px 22px 0 0; }
+.stats .cell + .cell { padding-left: 22px; border-left: 1px solid var(--line); }
+.stats .big { font: 600 clamp(34px, 4.6vw, 54px)/1 var(--mono); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.stats .big small { font-size: .42em; color: var(--dim); margin-left: 4px; letter-spacing: 0; }
+.stats .cap { margin-top: 12px; color: var(--dim); font-size: 15px; max-width: 22ch; }
+@media (max-width: 760px) { .stats .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats .cell:nth-child(3) { padding-left: 0; border-left: 0; } .stats .cell { padding-bottom: 28px; } }
+
+/* ---------- Market: research figures, each with its source ---------- */
+.market { padding-block: 40px 130px; }
+.market h2 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; margin: 16px 0 16px; max-width: 18ch; }
+.market .lede { color: var(--dim); max-width: 60ch; margin-bottom: 48px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.fact { background: var(--ink-2); border: 1px solid var(--line); border-radius: 24px; padding: 26px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.fact .v { font: 600 clamp(30px, 3.6vw, 44px)/1 var(--mono); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.fact .v small { font-size: .45em; color: var(--dim); letter-spacing: 0; margin-left: 4px; }
+.fact p { color: #c7c7cc; font-size: 15px; }
+.fact .src { margin-top: auto; font: 500 12px/1.5 var(--mono); color: var(--dim); }
+.fact .src a { color: var(--dim); text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 900px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+.funnel { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 34px; }
+.funnel h3 { font-size: 21px; margin-bottom: 6px; }
+.funnel .note { color: var(--dim); font-size: 14px; margin-bottom: 26px; }
+.bar { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 16px; align-items: center; margin-bottom: 12px; }
+.bar .lbl { font-size: 14px; color: #d2d2d7; }
+.bar .lbl small { display: block; color: var(--dim); font-size: 12px; }
+.bar .track { position: relative; height: 34px; }
+.bar .fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--sky), var(--indigo)); display: flex; align-items: center; padding-left: 12px;
+  font: 600 14px var(--mono); color: #fff; white-space: nowrap; min-width: fit-content; padding-right: 12px; }
+@media (max-width: 560px) { .bar { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+
+/* ---------- Comparison ---------- */
+.compare { background: var(--paper); color: var(--paper-fg); padding-block: 0 120px; }
+.compare h2 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; margin: 16px 0 16px; max-width: 18ch; }
+.compare .eyebrow { color: var(--paper-dim); }
+.compare .lede { color: var(--paper-dim); max-width: 60ch; margin-bottom: 40px; }
+.cmpwrap { overflow-x: auto; border-radius: 24px; background: #fff; }
+.cmp { width: 100%; min-width: 860px; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+.cmp th, .cmp td { padding: 15px 14px; text-align: center; border-bottom: 1px solid #ececf0; vertical-align: middle; }
+.cmp thead th { font-size: 13px; font-weight: 700; vertical-align: bottom; color: var(--paper-fg); }
+.cmp thead th small { display: block; font-weight: 400; color: var(--paper-dim); font-size: 12px; margin-top: 4px; }
+.cmp tbody th { text-align: left; font-weight: 500; color: var(--paper-fg); position: sticky; left: 0; background: #fff; min-width: 190px; }
+.cmp tbody th small { display: block; color: var(--paper-dim); font-weight: 400; font-size: 12px; }
+.cmp .us { background: linear-gradient(180deg, #eef5ff, #f3f0ff); }
+.cmp thead .us { border-radius: 18px 18px 0 0; color: var(--indigo); }
+.cmp .grp th { background: #f5f5f7; font: 600 12px var(--mono); letter-spacing: .08em; color: var(--paper-dim); padding: 10px 14px; }
+.cmp .grp td { background: #f5f5f7; }
+.y, .n, .h { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-weight: 700; font-size: 13px; }
+.y { background: #30d158; color: #fff; } .n { background: #ececf0; color: #aeaeb2; } .h { background: #ffd60a; color: #6b5300; }
+.cmp td small { display: block; color: var(--paper-dim); font-size: 12px; margin-top: 4px; }
+.cmpkey { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 18px; color: var(--paper-dim); font-size: 13px; }
+.cmpkey span { display: flex; align-items: center; gap: 8px; }
+
+/* ---------- Feature bento on paper ---------- */
+.paper { background: var(--paper); color: var(--paper-fg); padding-block: 120px; }
+.paper .eyebrow { color: var(--paper-dim); }
+.paper h2 { font-size: clamp(34px, 5.6vw, 64px); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; margin: 16px 0 56px; max-width: 16ch; }
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
+.card { background: #fff; border-radius: 28px; padding: 32px; overflow: hidden; position: relative; min-width: 0; }
+.card h3 { font-size: 24px; font-weight: 700; letter-spacing: -.01em; margin-bottom: 10px; }
+.card p { color: var(--paper-dim); font-size: 16px; max-width: 46ch; }
+.card .tag { display: inline-block; font: 600 12px/1 var(--mono); letter-spacing: .08em; color: var(--indigo); margin-bottom: 18px; }
+.c-wide { grid-column: span 4; } .c-narrow { grid-column: span 2; } .c-half { grid-column: span 3; } .c-third { grid-column: span 2; }
+@media (max-width: 900px) { .c-wide, .c-narrow, .c-half, .c-third { grid-column: span 6; } }
+.card.dark { background: #0d0d12; color: var(--fg); } .card.dark p { color: var(--dim); }
+.card .viz { margin-top: 26px; }
+/* thumbnails pop in without any download bar */
+.cloudrow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.cloudrow i { aspect-ratio: 1; border-radius: 6px; background-size: cover; position: relative; }
+.meter { margin-top: 16px; display: flex; justify-content: space-between; font: 500 13px var(--mono); color: var(--paper-dim); }
+.meter b { color: var(--paper-fg); }
+.basket-demo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.basket-demo i { width: 54px; aspect-ratio: 1; border-radius: 10px; background-size: cover; box-shadow: 0 0 0 2px var(--link); }
+.basket-demo .arrow { font: 600 14px var(--mono); color: var(--paper-dim); padding: 0 6px; }
+.basket-demo .draft { padding: 10px 14px; border-radius: 12px; background: #f0f0f5; font: 600 13px var(--mono); color: var(--paper-fg); }
+.months-demo { display: flex; flex-direction: column; gap: 6px; font: 500 14px var(--mono); }
+.months-demo div { display: flex; justify-content: space-between; padding: 8px 12px; border-radius: 10px; background: #f5f5f7; color: var(--paper-dim); }
+.months-demo div.cur { background: #e8f1ff; color: var(--link); font-weight: 600; }
+.lock { font: 600 46px/1 var(--mono); letter-spacing: -.03em; }
+.lock small { display: block; font-size: 13px; color: var(--dim); margin-top: 8px; letter-spacing: 0; }
+
+/* ---------- Workflow (a real sequence, so it is numbered) ---------- */
+.flow { padding-block: 130px 110px; }
+.flow h2 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 900; letter-spacing: -.03em; line-height: 1.1; margin: 16px 0 60px; max-width: 18ch; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+.step { padding: 0 28px 0 0; position: relative; }
+.step + .step { padding-left: 28px; border-left: 1px solid var(--line); }
+.step::before { counter-increment: s; content: "0" counter(s); display: block; font: 600 15px var(--mono); color: var(--sky); margin-bottom: 18px; }
+.step h3 { font-size: 23px; margin-bottom: 10px; }
+.step p { color: var(--dim); font-size: 16px; }
+.step .say { margin-top: 16px; display: inline-block; padding: 10px 16px; border-radius: 16px 16px 16px 4px; background: #1c1c22; color: var(--fg); font-size: 15px; }
+@media (max-width: 760px) { .steps { grid-template-columns: minmax(0, 1fr); gap: 36px; } .step + .step { padding-left: 0; border-left: 0; } }
+
+/* ---------- Liquid glass lab ---------- */
+.glass { padding-block: 120px; }
+.glass h2 { font-size: clamp(34px, 5.6vw, 66px); font-weight: 900; letter-spacing: -.03em; line-height: 1.06; margin: 16px 0 18px; max-width: 14ch; }
+.glass .lede { color: var(--dim); max-width: 56ch; font-size: 19px; }
+.lab { position: relative; margin-top: 48px; height: clamp(320px, 46vw, 480px); border-radius: 32px; overflow: hidden; background: #0b0b14; touch-action: none; user-select: none; }
+.lab .blob { position: absolute; border-radius: 50%; filter: blur(2px); }
+.lab .b1 { width: 46%; aspect-ratio: 1; left: -6%; top: -14%; background: radial-gradient(circle at 35% 35%, #ff9f0a, #ff375f 60%, transparent 70%); animation: float1 14s ease-in-out infinite alternate; }
+.lab .b2 { width: 40%; aspect-ratio: 1; right: -4%; top: 6%; background: radial-gradient(circle at 40% 40%, #64d2ff, #0a84ff 60%, transparent 70%); animation: float2 17s ease-in-out infinite alternate; }
+.lab .b3 { width: 38%; aspect-ratio: 1; left: 30%; bottom: -26%; background: radial-gradient(circle at 50% 40%, #30d158, #0e7a3a 60%, transparent 70%); animation: float1 19s ease-in-out infinite alternate-reverse; }
+.lab .stripes { position: absolute; inset: 0; background: repeating-linear-gradient(115deg, rgba(255,255,255,.07) 0 2px, transparent 2px 26px); }
+.lab .word { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 900 clamp(48px, 11vw, 140px)/1 var(--display); color: rgba(255,255,255,.9); letter-spacing: -.04em; white-space: nowrap; }
+@keyframes float1 { to { transform: translate(14%, 10%) scale(1.08); } }
+@keyframes float2 { to { transform: translate(-12%, 14%) scale(.94); } }
+.lens { position: absolute; left: 50%; top: 50%; width: clamp(180px, 34%, 340px); height: clamp(90px, 15vw, 150px); margin: calc(clamp(90px, 15vw, 150px) / -2) 0 0 calc(clamp(180px, 34%, 340px) / -2);
+  border-radius: 999px; cursor: grab; background: rgba(255,255,255,.08);
+  -webkit-backdrop-filter: url(#lens) blur(var(--blur, 3px)) saturate(170%) brightness(1.08); backdrop-filter: url(#lens) blur(var(--blur, 3px)) saturate(170%) brightness(1.08);
+  box-shadow: inset 0 2px 1px rgba(255,255,255,.75), inset 0 -2px 2px rgba(255,255,255,.2), inset 2px 0 2px rgba(255,255,255,.3), inset -2px 0 2px rgba(255,255,255,.3),
+              inset 0 0 30px rgba(255,255,255,.12), 0 20px 50px rgba(0,0,0,.45); transition: transform .4s cubic-bezier(.3,1.6,.4,1); }
+.lens:active { cursor: grabbing; transform: scale(1.06); }
+.lens::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(120% 70% at 30% -10%, rgba(255,255,255,.3), transparent 60%); pointer-events: none; }
+.lab .hint { position: absolute; left: 20px; bottom: 16px; font: 500 13px var(--mono); color: rgba(255,255,255,.6); }
+.controls { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 22px; align-items: center; }
+.controls label { display: flex; align-items: center; gap: 12px; color: var(--dim); font: 500 14px var(--mono); }
+.controls input[type=range] { width: 180px; accent-color: var(--sky); }
+.controls output { color: var(--fg); min-width: 3ch; font-variant-numeric: tabular-nums; }
+.layers { margin-top: 64px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+.layers h3 { font-size: 19px; margin-bottom: 8px; }
+.layers p { color: var(--dim); font-size: 15px; }
+.layers .sw { height: 6px; border-radius: 3px; margin-bottom: 18px; }
+@media (max-width: 760px) { .layers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Under the hood ---------- */
+.tech { padding-block: 40px 130px; }
+.tech h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 900; letter-spacing: -.02em; margin: 16px 0 36px; }
+.spec { width: 100%; border-collapse: collapse; font-size: 15px; }
+.spec th, .spec td { text-align: left; padding: 16px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.spec th { width: 28%; color: var(--dim); font-weight: 500; padding-right: 20px; }
+.spec td code { font-family: var(--mono); font-size: 13px; color: var(--sky); background: #12121a; padding: 2px 6px; border-radius: 5px; }
+.tablewrap { overflow-x: auto; }
+
+/* ---------- Roadmap ---------- */
+.road { background: var(--ink-2); padding-block: 120px; border-top: 1px solid var(--line); }
+.road h2 { font-size: clamp(34px, 5.4vw, 60px); font-weight: 900; letter-spacing: -.03em; line-height: 1.08; margin: 16px 0 16px; max-width: 16ch; }
+.road .lede { color: var(--dim); max-width: 60ch; margin-bottom: 56px; }
+.lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.lane.ai { background: linear-gradient(160deg, #1a1a3a, #15151c 60%); box-shadow: inset 0 0 0 1px rgba(88,86,214,.45); }
+.lane { background: #15151c; border-radius: 24px; padding: 28px; min-width: 0; }
+.lane h3 { font-size: 21px; margin-bottom: 4px; }
+.lane .why { color: var(--dim); font-size: 14px; margin-bottom: 20px; }
+.lane ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.lane li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; }
+.lane li b { font-size: 16px; grid-column: 2; }
+.lane li span { grid-column: 2; color: var(--dim); font-size: 14px; }
+.pill { grid-row: span 2; align-self: start; font: 600 11px/1 var(--mono); padding: 6px 8px; border-radius: 999px; white-space: nowrap; margin-top: 2px; }
+.p-done { background: #30d158; color: #062b12; }
+.p-next { background: rgba(48,209,88,.16); color: #30d158; }
+.p-plan { background: rgba(41,151,255,.16); color: var(--link); }
+.p-explore { background: rgba(191,90,242,.16); color: #bf5af2; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 28px; color: var(--dim); font-size: 13px; }
+.legend span { display: flex; gap: 8px; align-items: center; }
+@media (max-width: 900px) { .lanes { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Join the beta ---------- */
+.join { padding-block: 130px; text-align: center; position: relative; overflow: hidden; }
+.join::before { content: ""; position: absolute; inset: 20% 10% auto; height: 60%; z-index: -1; filter: blur(90px); opacity: .45;
+  background: radial-gradient(40% 50% at 35% 50%, var(--sky), transparent 70%), radial-gradient(40% 50% at 65% 50%, #bf5af2, transparent 70%); }
+.join h2 { font-size: clamp(38px, 6.4vw, 76px); font-weight: 900; letter-spacing: -.035em; line-height: 1.05; margin: 16px auto 18px; max-width: 14ch; }
+.join .lede { color: var(--dim); max-width: 52ch; margin: 0 auto 54px; font-size: 19px; }
+.who { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; text-align: left; max-width: 900px; margin: 0 auto 56px; }
+.who > div { background: var(--ink-2); border: 1px solid var(--line); border-radius: 24px; padding: 26px; min-width: 0; }
+.who h3 { font-size: 18px; margin-bottom: 14px; }
+.who ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; color: #d2d2d7; font-size: 15px; }
+.who li { display: flex; gap: 10px; }
+.who li::before { content: "✓"; color: #30d158; font-weight: 700; }
+@media (max-width: 700px) { .who { grid-template-columns: minmax(0, 1fr); } }
+.signup { max-width: 760px; margin: 0 auto; border-radius: 32px; padding: 34px; text-align: left; background: rgba(255,255,255,.06);
+  -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: inset 0 1px .5px rgba(255,255,255,.5), inset 0 0 0 1px rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.5); }
+.signup h3 { font-size: 22px; margin-bottom: 22px; text-align: center; }
+.how { list-style: none; counter-reset: h; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.how li { counter-increment: h; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; align-items: center; }
+.how li::before { content: counter(h); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 600 15px var(--mono);
+  background: linear-gradient(135deg, var(--sky), var(--indigo)); color: #fff; }
+.how .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 17px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 8px 7px 14px; border-radius: 999px; background: rgba(255,255,255,.1);
+  font-weight: 700; box-shadow: inset 0 1px .5px rgba(255,255,255,.3); user-select: all; }
+.chip button { border: 0; border-radius: 999px; padding: 5px 12px; font: 600 12px var(--body); cursor: pointer; background: var(--link); color: #fff; }
+.chip button.done { background: #30d158; }
+.signup .alt { margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.1); display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; color: var(--dim); font-size: 14px; }
+.signup .fine { margin-top: 18px; color: var(--dim); font-size: 13px; text-align: center; }
+
+footer { padding-block: 48px 64px; color: var(--dim); font-size: 13px; border-top: 1px solid var(--line); }
+footer .wrap { display: flex; flex-direction: column; gap: 8px; }
+
+/* Scroll reveal: content is readable at rest; it only eases up into place */
+.rise { transition: transform .9s cubic-bezier(.2,.8,.2,1), opacity .9s ease; }
+.rise.pre { transform: translateY(36px); opacity: .55; }
+@media (prefers-reduced-motion: reduce) {
+  .rise, .rise.pre { transform: none; opacity: 1; transition: none; }
+  .mock-wrap { transform: none !important; }
+  .app .amb i, .lab .blob { animation: none; }
+}
+
+/* ================= Light frosted-glass theme =================
+   Everything below overrides the earlier dark styling component by component. */
+.fact, .card:not(.dark), .cmpwrap, .lane, .who > div, .signup, .months-demo div, .step .say {
+  background: var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow); border: 0; }
+
+nav { background: rgba(255,255,255,.55); border-bottom: 1px solid rgba(255,255,255,.7); box-shadow: 0 1px 0 rgba(24,28,60,.06); }
+nav .links a { color: #3a3a3f; }
+nav .links a:hover { color: var(--link); }
+.btn.primary { box-shadow: 0 8px 24px rgba(0,113,227,.28); }
+.btn.ghost { background: rgba(255,255,255,.5); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.halo { opacity: .45; }
+.app { box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 40px 100px rgba(40,50,110,.28); }
+
+.problem p.line { opacity: var(--o, .22); }
+
+.fact p { color: #3a3a3f; }
+.bar .lbl { color: #3a3a3f; }
+.bar .track { background: rgba(255,255,255,.45); border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); }
+
+.card { border-radius: 30px; }
+.card.dark { background: #15151c; box-shadow: 0 20px 50px rgba(20,20,40,.25); color: #f5f5f7; }
+.card.dark p, .card.dark .lock small, .card.dark .meter { color: #a1a1a6; }
+.months-demo div { color: var(--paper-dim); }
+.months-demo div.cur { background: rgba(0,113,227,.12); color: var(--link); }
+.basket-demo .draft { background: rgba(255,255,255,.7); }
+
+.cmpwrap { border-radius: 28px; }
+.cmp th, .cmp td { border-bottom-color: rgba(24,28,60,.07); }
+.cmp tbody th { background: rgba(250,250,253,.92); }
+.cmp .grp th, .cmp .grp td { background: rgba(240,241,247,.75); }
+.cmp .us { background: linear-gradient(180deg, rgba(225,238,255,.8), rgba(236,232,255,.8)); }
+.n { background: rgba(24,28,60,.08); color: #8e8e93; }
+
+.step::before { color: var(--link); }
+.step .say { color: var(--fg); }
+
+.lab { box-shadow: 0 30px 80px rgba(20,20,60,.25); }
+.spec td code { background: rgba(0,113,227,.08); color: var(--link); }
+
+.road { background: transparent; border-top: 0; }
+.lane.ai { background: linear-gradient(160deg, rgba(225,222,255,.75), rgba(255,255,255,.55)); box-shadow: var(--glass-shadow), 0 0 0 1.5px rgba(88,86,214,.25) inset; }
+.p-done { background: #34c759; color: #fff; }
+.p-next { background: rgba(52,199,89,.14); color: #1f8a3e; }
+.p-plan { background: rgba(0,113,227,.12); color: var(--link); }
+.p-explore { background: rgba(175,82,222,.13); color: #8e3fc2; }
+
+.join::before { opacity: .35; }
+.who li { color: #3a3a3f; }
+.signup { background: var(--glass-strong); }
+.chip { background: rgba(24,28,60,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.8); }
+.how li::before { box-shadow: 0 4px 12px rgba(88,86,214,.3); }
+
+footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+@media (prefers-reduced-motion: reduce) { .aurora i { animation: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="lens" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feImage id="lens-map" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"/>
+    <feDisplacementMap id="lens-disp" in="SourceGraphic" in2="map" scale="60" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<nav aria-label="页面导航">
+  <div class="wrap">
+    <a class="brand" href="#top"><canvas class="logo" width="64" height="64" aria-hidden="true"></canvas>爱果相册 <span style="color:var(--dim);font-weight:500">Orchard</span></a>
+    <div class="links">
+      <a href="#problem">问题</a><a href="#market">市场</a><a href="#features">功能</a><a href="#compare">对比</a><a href="#design">设计</a><a href="#tech">原理</a><a href="#roadmap">路线图</a><a class="keep" href="#join">申请内测</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">为 AI 自动剪辑视频而生 · for Windows</p>
+    <h1>iPhone 的照片，<br><span class="grad">在 Windows 上顺手了。</span></h1>
+    <p class="lede">你的 iPhone 素材果园，AI 帮你摘下最好的那几秒。按月份浏览全部 iCloud 照片和视频，缩略图秒开、原片不用下载。挑好素材放进剪辑篮，Claude 直接把它变成剪映草稿。</p>
+    <div class="ctas"><a class="btn primary" href="#join">申请内测</a><a class="btn ghost" href="#features">看看它能做什么 ›</a></div>
+  </div>
+  <div class="wrap stage" style="position:relative">
+    <div class="mock-wrap" id="mock">
+      <div class="halo"></div>
+      <div class="app" role="img" aria-label="爱果相册界面示意：左侧液态玻璃侧边栏，右侧按月份排列的照片网格">
+        <div class="titlebar"><canvas class="logo" width="64" height="64"></canvas>爱果相册</div>
+        <div class="amb"><i></i><i></i><i></i></div>
+        <div class="side">
+          <b><canvas class="logo" width="64" height="64"></canvas>爱果相册</b>
+          <small>照片</small>
+          <span class="on">图库<em>85,025</em></span>
+          <span>视频<em>14,737</em></span>
+          <span>照片<em>70,288</em></span>
+          <small>剪辑</small>
+          <span>剪辑篮<em>5</em></span>
+          <small>时间</small>
+          <span>2026 · 10月<em>390</em></span>
+          <span>9月<em>32</em></span>
+          <span>8月<em>272</em></span>
+        </div>
+        <div class="sel">选择</div>
+        <div class="main">
+          <h4>图库</h4>
+          <div class="sub">2018年6月 – 2026年10月 · 85,025 项</div>
+          <h5>2026年10月</h5>
+          <div class="grid" id="mockgrid"></div>
+        </div>
+        <div class="seg"><span>小</span><span class="on">中</span><span>大</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="problem" id="problem">
+  <div class="wrap">
+    <p class="eyebrow">它要解决的问题</p>
+    <p class="line">iPhone 拍的一切，都在 iCloud 里。</p>
+    <p class="line">到了 Windows，只剩一个塞着 <span class="num">85,025</span> 个文件的平铺文件夹。</p>
+    <p class="line">没有月份，没有缩略图，看不出哪天拍了什么。</p>
+    <p class="line">想剪一条视频，得先把 <span class="num">440 GB</span> 原片搬下来。</p>
+    <p class="line"><span class="grad">所以有了爱果相册。</span></p>
+  </div>
+</section>
+
+<section class="stats" aria-label="关键数字">
+  <div class="wrap">
+    <div class="row">
+      <div class="cell rise"><div class="big">0<small>GB</small></div><p class="cap">浏览时预先下载的原片</p></div>
+      <div class="cell rise"><div class="big">1.5<small>秒</small></div><p class="cap">缩略图请求最长等待，绝不卡住界面</p></div>
+      <div class="cell rise"><div class="big">2<small>分钟</small></div><p class="cap">新同步的照片自动出现在图库里</p></div>
+      <div class="cell rise"><div class="big">127<small>.0.0.1</small></div><p class="cap">只在本机运行，任何内容都不上传</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="market" id="market">
+  <div class="wrap">
+    <p class="eyebrow">市场</p>
+    <h2>不只是你一个人<br>有这个问题。</h2>
+    <p class="lede">iPhone 拍、Windows 剪，是一大群人的日常。现有的工具要么只管搬运文件，要么只管剪辑，中间「从几万个文件里找到该用的几秒」这一段没人做。</p>
+    <div class="facts">
+      <div class="fact rise"><div class="v">60–76<small>%</small></div><p>的美国 iPhone 用户同时在用 Windows 电脑。</p><p class="src">Verto Analytics 2015、PCMag 2019 调研 · <a href="https://infotoday.com/LinkUp/Whos-Using-What-PCs-and-Devices-116042.shtml">来源</a> · 数据较早，近年无公开新调研</p></div>
+      <div class="fact rise"><div class="v">6,768<small>万</small></div><p>人过去一年用剪映导出了自己的第一条作品，另有 326 万抖音万粉创作者在用剪映。</p><p class="src">剪映发布会，新华网 2026 年 9 月 · <a href="https://www.news.cn/tech/20260921/6742f6c1f32f41d4918105bc686fe907/c.html">来源</a></p></div>
+      <div class="fact rise"><div class="v">5.09<small>亿次</small></div><p>CapCut 2025 年的下载量，全球照片视频类第一。</p><p class="src">AppTweak 2025 · <a href="https://www.apptweak.com/en/reports/most-downloaded-photo-video-apps">来源</a></p></div>
+      <div class="fact rise"><div class="v">$1.6→9.3<small>B</small></div><p>AI 视频剪辑工具市场，2025 到 2030 年，年增长约 42%。</p><p class="src">行业报告，经 VidPros 转引，口径不一 · <a href="https://vidpros.com/video-editing-statistics/">来源</a></p></div>
+      <div class="fact rise"><div class="v">15<small>%</small></div><p>2025 年三季度中国智能手机出货中 iPhone 的份额；大中华区智能手机用户约 10 亿。</p><p class="src">Counterpoint 经 Statista、Asymco · <a href="https://statista.com/statistics/528807/apple-s-smartphone-market-share-in-china/">来源</a></p></div>
+      <div class="fact rise"><div class="v">30<small>秒/张</small></div><p>有用户反映 iCloud for Windows 下载照片时慢到每 30 秒才下来一张，同步卡住、CPU 占用高的抱怨持续多年。</p><p class="src">Apple 社区 · <a href="https://origin-discussions2-us-dr-prz.apple.com/thread/254930449">来源</a></p></div>
+    </div>
+    <div class="funnel">
+      <h3>中国市场规模估算</h3>
+      <p class="note">这是我们的估算，不是统计数据。每一步的比例都是假设，写在左侧。</p>
+      <div class="bar rise"><div class="lbl">智能手机用户<small>大中华区，Asymco 2025</small></div><div class="track"><div class="fill" style="width:100%">约 10 亿</div></div></div>
+      <div class="bar rise"><div class="lbl">iPhone 用户<small>假设在用份额 20%</small></div><div class="track"><div class="fill" style="width:20%">约 2 亿</div></div></div>
+      <div class="bar rise"><div class="lbl">同时用 Windows 电脑<small>假设 50%，低于美国调研</small></div><div class="track"><div class="fill" style="width:10%">约 1 亿</div></div></div>
+      <div class="bar rise"><div class="lbl">会在电脑上剪视频<small>假设 3–5%</small></div><div class="track"><div class="fill" style="width:4%">300–500 万</div></div></div>
+      <div class="bar rise"><div class="lbl">愿意付费<small>假设 3–5%，年费 ¥99</small></div><div class="track"><div class="fill" style="width:1%">10–25 万人 · ¥1,000–2,500 万/年</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="paper" id="features">
+  <div class="wrap">
+    <p class="eyebrow">功能</p>
+    <h2>像 Mac 上的「照片」一样用，<br>为剪视频而生。</h2>
+    <div class="bento">
+      <article class="card c-wide rise">
+        <span class="tag">零下载浏览</span>
+        <h3>缩略图直接从 iCloud 来，原片留在云端。</h3>
+        <p>iCloud for Windows 本来就为每个文件存了缩略图。爱果相册直接读取它，翻遍整个图库也不会触发一次原片下载。只有点开大图或播放视频时，才下载那一个文件。</p>
+        <div class="viz"><div class="cloudrow" id="cloudrow"></div>
+          <div class="meter"><span>已浏览 <b>2,400</b> 张</span><span>已下载原片 <b>0 GB</b></span></div></div>
+      </article>
+      <article class="card c-narrow rise">
+        <span class="tag">时间线</span>
+        <h3>按月份找回每一天。</h3>
+        <p>图库按月分组，侧边栏一键跳到任何一个月。</p>
+        <div class="viz months-demo"><div class="cur"><span>2026 · 10月</span><span>390</span></div><div><span>9月</span><span>32</span></div><div><span>8月</span><span>272</span></div><div><span>7月</span><span>933</span></div></div>
+      </article>
+      <article class="card c-half rise">
+        <span class="tag">剪辑篮</span>
+        <h3>挑素材，然后说一句话。</h3>
+        <p>把想用的照片和视频放进剪辑篮，清单自动保存成 <code style="font-family:var(--mono);font-size:14px">剪辑篮.json</code>。跟 Claude 说「用剪辑篮里的素材剪一条」，剪映里就多了一份可编辑的草稿。</p>
+        <div class="viz basket-demo" id="basketdemo"><span class="arrow">→</span><span class="draft">剪映草稿 ✓</span></div>
+      </article>
+      <article class="card c-half rise">
+        <span class="tag">选择模式</span>
+        <h3>连续点选，一口气挑完。</h3>
+        <p>点右上角「选择」，之后每点一张照片就加入或移出剪辑篮，再点「完成」或按 Esc 退出。勾选会立刻显示，不用等服务器回应。</p>
+        <div class="viz"><div class="cloudrow" id="selectrow"></div></div>
+      </article>
+      <article class="card c-half rise">
+        <span class="tag">来源分类 · 新</span>
+        <h3>一眼分清拍的、截的、存的。</h3>
+        <p>按文件名规律、缩略图比例和原片里的相机信息，自动分成相机拍摄、截图、录屏、存下的 / 收到的、编辑导出。剪片子时只在真正拍的素材里找。</p>
+        <div class="viz months-demo"><div class="cur"><span>相机拍摄</span><span>70,778</span></div><div><span>截图</span><span>22,385</span></div><div><span>存下的 / 收到的</span><span>12,307</span></div><div><span>录屏 · 编辑导出</span><span>767</span></div></div>
+      </article>
+      <article class="card c-half dark rise">
+        <span class="tag" style="color:var(--sky)">关键帧小样 · 新</span>
+        <h3>一张图看完一条视频。</h3>
+        <p>每条视频抽 9 帧拼成 3×3 小样，标好时间点，同时读出时长、分辨率、机型和拍摄地点。人看一眼就知道拍了什么，AI 也一样。</p>
+        <div class="viz"><div class="cloudrow" id="sheetrow" style="grid-template-columns:repeat(3,minmax(0,1fr));max-width:240px"></div>
+          <div class="meter" style="color:var(--dim)"><span>0:47 · 1080×1920 · iPhone</span></div></div>
+      </article>
+      <article class="card c-third rise">
+        <span class="tag">播放</span>
+        <h3>HEVC 视频直接播放。</h3>
+        <p>iPhone 的 .MOV 和 H.265 视频在应用里直接播放，播不了的格式一键交给默认播放器。</p>
+      </article>
+      <article class="card c-third rise">
+        <span class="tag">安静运行</span>
+        <h3>开机就在后台待命。</h3>
+        <p>服务随 Windows 启动，空闲时把缩略图提前存好，你打开时就是秒开。</p>
+      </article>
+      <article class="card c-third dark rise">
+        <span class="tag" style="color:var(--sky)">隐私</span>
+        <div class="lock">127.0.0.1<small>只监听本机地址</small></div>
+        <p style="margin-top:14px">照片不经过任何第三方服务器，iCloud 文件夹里的文件一个都不移动、不改名。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="wrap">
+    <p class="eyebrow">对比</p>
+    <h2>别的工具停在哪里，<br>我们从哪里开始。</h2>
+    <p class="lede">我们把常见的四类方案放在一起比。它们各自做好了一段，但从「iPhone 素材库」到「AI 剪好的片子」，中间那段只有我们在做。</p>
+    <div class="cmpwrap">
+      <table class="cmp">
+        <thead><tr>
+          <th></th>
+          <th class="us">爱果相册<small>本产品</small></th>
+          <th>iCloud for Windows<small>+ Windows「照片」</small></th>
+          <th>传输备份工具<small>CopyTrans · AnyTrans · 爱思助手</small></th>
+          <th>AI 相册<small>Mylio 等</small></th>
+          <th>AI 剪辑<small>剪映一键成片 · OpusClip · Eddie AI</small></th>
+        </tr></thead>
+        <tbody>
+          <tr class="grp"><th colspan="6">浏览</th></tr>
+          <tr><th>按月浏览全部 iCloud 照片</th><td class="us"><span class="y">✓</span></td><td><span class="h">~</span><small>基础时间线</small></td><td><span class="n">–</span><small>文件列表</small></td><td><span class="y">✓</span><small>需先导入</small></td><td><span class="n">–</span></td></tr>
+          <tr><th>不下载原片也能看缩略图</th><td class="us"><span class="y">✓</span></td><td><span class="h">~</span><small>依赖同步状态</small></td><td><span class="n">–</span><small>要先下载</small></td><td><span class="n">–</span><small>要先导入</small></td><td><span class="n">–</span></td></tr>
+          <tr><th>iOS 26 风格液态玻璃界面</th><td class="us"><span class="y">✓</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td></tr>
+          <tr class="grp"><th colspan="6">理解素材</th></tr>
+          <tr><th>区分相机拍摄 / 截图 / 存下的</th><td class="us"><span class="y">✓</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="h">~</span><small>AI 标签</small></td><td><span class="n">–</span></td></tr>
+          <tr><th>视频关键帧小样</th><td class="us"><span class="y">✓</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="h">~</span><small>上传之后</small></td></tr>
+          <tr><th>给 AI 读的素材索引</th><td class="us"><span class="y">✓</span><small>JSONL + 命令行</small></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td></tr>
+          <tr class="grp"><th colspan="6">剪辑</th></tr>
+          <tr><th>挑好的素材直接变剪映草稿</th><td class="us"><span class="y">✓</span><small>剪辑篮 → Claude</small></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="h">~</span><small>需自己整理上传</small></td></tr>
+          <tr><th>草稿可在剪映里继续精修</th><td class="us"><span class="y">✓</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="n">–</span></td><td><span class="h">~</span><small>剪映可以，其他多为成片</small></td></tr>
+          <tr class="grp"><th colspan="6">易用性与隐私</th></tr>
+          <tr><th>开始使用要做的事</th><td class="us">双击打开</td><td>装 iCloud 客户端，再在照片 App 里关联</td><td>连线或登录，每次手动导出</td><td>把整个图库导入一遍</td><td>先把素材挑好、传上去</td></tr>
+          <tr><th>照片留在本机处理</th><td class="us"><span class="y">✓</span><small>只监听 127.0.0.1</small></td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="y">✓</span></td><td><span class="n">–</span><small>多为云端处理</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cmpkey"><span><i class="y">✓</i>支持</span><span><i class="h">~</i>部分支持或有前提</span><span><i class="n">–</i>不支持</span><span>按各产品公开资料整理，2026 年 10 月</span></div>
+  </div>
+</section>
+
+<section class="flow">
+  <div class="wrap">
+    <p class="eyebrow">从素材到草稿</p>
+    <h2>三步，从相册到剪映。</h2>
+    <div class="steps">
+      <div class="step rise"><h3>在相册里挑</h3><p>按月份找到那天拍的素材，鼠标移到缩略图上，点右上角的圆圈放进剪辑篮。</p></div>
+      <div class="step rise"><h3>跟 Claude 说一句</h3><p>Claude 读取剪辑篮清单，把需要的原片从 iCloud 取下来，按你的要求排好顺序。</p><span class="say">用剪辑篮里的素材剪一条</span></div>
+      <div class="step rise"><h3>在剪映里打开</h3><p>得到的是一份完整的剪映草稿：转场、字幕、配乐都在轨道上，可以接着精修。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="glass" id="design">
+  <div class="wrap">
+    <p class="eyebrow">设计</p>
+    <h2>液态玻璃，<br>来到 Windows。</h2>
+    <p class="lede">界面参考 iOS 26 的液态玻璃：控件是浮在照片上方的玻璃胶囊，会折射、会透色、会在边缘反光。拖动下面这块玻璃试试，它用的就是应用里同一套折射滤镜。</p>
+    <div class="lab" id="lab">
+      <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <div class="stripes"></div>
+      <div class="word">图库 2026</div>
+      <div class="lens" id="lens" role="slider" tabindex="0" aria-label="可拖动的液态玻璃，方向键移动"></div>
+      <span class="hint">拖动玻璃 · 方向键也可以</span>
+    </div>
+    <div class="controls">
+      <label for="refract">折射 <input type="range" id="refract" min="0" max="120" value="60"><output id="refract-out">60</output></label>
+      <label for="blur">模糊 <input type="range" id="blur" min="0" max="16" value="3"><output id="blur-out">3</output></label>
+    </div>
+    <div class="layers">
+      <div class="rise"><div class="sw" style="background:linear-gradient(90deg,var(--sky),var(--indigo))"></div><h3>折射</h3><p>一张透镜位移图让玻璃边缘把后面的画面向内弯折，中间保持清晰。</p></div>
+      <div class="rise"><div class="sw" style="background:linear-gradient(90deg,#fff,rgba(255,255,255,.2))"></div><h3>高光</h3><p>左上亮、右下暗的细边，加一层顶部柔光，让玻璃有厚度。</p></div>
+      <div class="rise"><div class="sw" style="background:linear-gradient(90deg,var(--sun),#ff375f,#bf5af2)"></div><h3>氛围光</h3><p>侧边栏背后是你正在看的那个月的照片，放大、模糊、缓慢流动。</p></div>
+      <div class="rise"><div class="sw" style="background:linear-gradient(90deg,#30d158,#64d2ff)"></div><h3>悬浮</h3><p>标题、选择、分段控件都浮在内容上方，滚动时照片从下面穿过。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tech" id="tech">
+  <div class="wrap">
+    <p class="eyebrow">原理</p>
+    <h2>小而结实的技术栈。</h2>
+    <div class="tablewrap">
+      <table class="spec">
+        <tr><th>缩略图</th><td>Windows 外壳接口 <code>IShellItemImageFactory</code>，带 <code>SIIGBF_THUMBNAILONLY</code> 标志，只取 iCloud 已缓存的缩略图，不触发下载</td></tr>
+        <tr><th>排队策略</th><td>后进先出队列 + 4 路并发：你正在看的缩略图先生成；请求最多等 1.5 秒就先返回，浏览器的 6 个连接永远不会被占满</td></tr>
+        <tr><th>后台预热</th><td>空闲 10 秒后，按从新到旧把全部缩略图存进本地缓存</td></tr>
+        <tr><th>窗口</th><td>pywebview + WebView2，Windows 11 系统 Acrylic 背景，打包为独立的 <code>iCloudPhotos.exe</code></td></tr>
+        <tr><th>服务</th><td>Python 标准库 HTTP 服务，只监听 <code>127.0.0.1:8765</code>，支持视频断点续传（Range）</td></tr>
+        <tr><th>与剪映衔接</th><td>剪辑篮保存为 <code>素材库\剪辑篮.json</code>，由 Claude 的剪映草稿流程读取</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="road" id="roadmap">
+  <div class="wrap">
+    <p class="eyebrow">路线图</p>
+    <h2>下一步，让它更懂剪视频。</h2>
+    <p class="lede">按 AI 接口、设计、功能、易用性四个方向整理。排在最前面的，是能让「拍完 → 发出去」这条路更短的事。</p>
+    <div class="lanes">
+      <div class="lane ai rise">
+        <h3>AI 接口</h3><p class="why">让 AI 不打开一个原片，就知道该用哪几秒。</p>
+        <ul>
+          <li><span class="pill p-done">已上线</span><b>素材来源分类</b><span>自动区分相机拍摄、截图、录屏和从 App 存下来的视频，AI 只在真正拍的素材里找。</span></li>
+          <li><span class="pill p-done">已上线</span><b>视频关键帧小样</b><span>每条视频生成一张 3×3 关键帧拼图，AI 看一张图就知道两分钟里拍了什么。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>给 AI 的标准接口（MCP）</b><span>按「上周、演唱会、有说话声、超过 10 秒」这样的条件直接检索、取片、写剪辑篮。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>事件和字幕索引</b><span>按时间和地点把素材聚成一次次「事件」，视频里的话转成文字，可按台词找片段。</span></li>
+          <li><span class="pill p-explore">探索</span><b>记住你的剪辑口味</b><span>记录每次成片用了哪些镜头、删了哪些，下次挑素材越来越准。</span></li>
+        </ul>
+      </div>
+      <div class="lane rise">
+        <h3>设计</h3><p class="why">让它看起来、用起来都更像原生应用。</p>
+        <ul>
+          <li><span class="pill p-next">下一版</span><b>缩略图放大进大图</b><span>点开照片时从网格位置平滑放大，关闭时缩回原位。</span></li>
+          <li><span class="pill p-next">下一版</span><b>右侧时间轴拖条</b><span>拖动就能在几年之间快速穿梭，边拖边显示年月。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>年 · 月 · 日三级视图</b><span>Ctrl + 滚轮在年、月、日之间缩放，和 iPhone 的照片一样。</span></li>
+          <li><span class="pill p-explore">探索</span><b>深浅色手动切换</b><span>不跟随系统，单独给相册设定外观。</span></li>
+        </ul>
+      </div>
+      <div class="lane rise">
+        <h3>功能</h3><p class="why">把挑素材、剪视频的环节接得更紧。</p>
+        <ul>
+          <li><span class="pill p-next">下一版</span><b>应用内一键出草稿</b><span>剪辑篮里直接点「生成剪映草稿」，不用切回对话。</span></li>
+          <li><span class="pill p-next">下一版</span><b>加入即预下载</b><span>放进剪辑篮的素材在后台先下好原片，剪的时候不再等。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>智能筛选</b><span>一键隐藏截图、只看人像或实况照片，图库里截图很多时尤其有用。</span></li>
+          <li><span class="pill p-explore">探索</span><b>本地语义搜索</b><span>输入「海边」「孩子」「演唱会」就能找到照片，模型在本机运行。</span></li>
+        </ul>
+      </div>
+      <div class="lane rise">
+        <h3>易用性</h3><p class="why">少点几下，少等几秒。</p>
+        <ul>
+          <li><span class="pill p-next">下一版</span><b>Shift 区间多选</b><span>点一张、按住 Shift 再点一张，中间的全部选中。</span></li>
+          <li><span class="pill p-next">下一版</span><b>拖进剪映</b><span>把缩略图直接拖到剪映的时间线上。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>托盘图标和进度</b><span>在任务栏看到缩略图预热和原片下载的进度。</span></li>
+          <li><span class="pill p-plan">规划中</span><b>键盘快捷键</b><span>空格快速预览，J / K 切换，A 加入剪辑篮。</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legend"><span><i class="pill p-done">已上线</i>可以用了</span><span><i class="pill p-next">下一版</i>价值最高、改动最小</span><span><i class="pill p-plan">规划中</i>需要一些新能力</span><span><i class="pill p-explore">探索</i>先做原型验证</span></div>
+  </div>
+</section>
+
+<section class="join" id="join">
+  <div class="wrap">
+    <p class="eyebrow">内测招募</p>
+    <h2>首批内测，<br><span class="grad">现在开始。</span></h2>
+    <p class="lede">爱果相册正在小范围内测。如果你也是 iPhone 拍、Windows 剪，欢迎来一起把它打磨好。</p>
+    <div class="who">
+      <div class="rise"><h3>适合这样的你</h3><ul>
+        <li>用 iPhone 拍照片和视频，用 Windows 电脑剪辑</li>
+        <li>经常在抖音、小红书或视频号发视频</li>
+        <li>开了 iCloud 照片，素材多到找不着</li>
+        <li>愿意每周花几分钟告诉我们哪里好用、哪里不好用</li>
+      </ul></div>
+      <div class="rise"><h3>内测你会得到</h3><ul>
+        <li>抢先用上剪辑篮和 AI 自动出剪映草稿</li>
+        <li>你的反馈直接决定下一版先做什么</li>
+        <li>和开发者直接沟通，问题当天回复</li>
+        <li>正式版上线时的内测用户专属价格</li>
+      </ul></div>
+    </div>
+    <div class="signup rise">
+      <h3>三步报名</h3>
+      <ol class="how">
+        <li><div class="row">打开抖音，搜索 <span class="chip"><span id="acct">伏先生在澳洲</span><button type="button" data-copy="acct">复制</button></span></div></li>
+        <li><div class="row">私信发送关键词 <span class="chip"><span id="kw">内测</span><button type="button" data-copy="kw">复制</button></span></div></li>
+        <li><div class="row">收到报名表，填好后等待内测邀请</div></li>
+      </ol>
+      <div class="alt" id="formalt" hidden><span>不用抖音？</span><a class="btn ghost" id="formlink" href="#" target="_blank" rel="noopener">直接填写报名表 ›</a></div>
+      <p class="fine">内测名额有限，按报名顺序和使用场景分批邀请。我们只用你留下的联系方式发送内测邀请。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>爱果相册 Orchard 是一个独立开发的工具，读取 iCloud for Windows 同步到本机的照片和视频。它与 Apple Inc. 无关，也不是 Apple 官方产品；iCloud、iPhone 是 Apple Inc. 的商标。</p>
+    <p>页面中的界面图和照片均为示意，用程序绘制，不含任何真实照片。</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Abstract "photos": sky, sun and land drawn on canvas, so no real photos ship ---- */
+  const PALETTES = [
+    ["#7cc4ff", "#ffd8a8", "#ff9f43", "#2d6a4f"], ["#ff9a8b", "#ffd1a1", "#ff6a88", "#3d2c5e"],
+    ["#1e3c72", "#2a5298", "#ffd166", "#0b132b"], ["#a1ffce", "#faffd1", "#ffb347", "#386641"],
+    ["#0f2027", "#2c5364", "#f72585", "#14213d"], ["#fbc2eb", "#a6c1ee", "#fff3b0", "#6a4c93"],
+    ["#ffecd2", "#fcb69f", "#ff7b54", "#7f5539"], ["#00c6ff", "#0072ff", "#fefae0", "#023e8a"],
+    ["#f6d365", "#fda085", "#ffffff", "#9c6644"], ["#84fab0", "#8fd3f4", "#fffbe6", "#1b4332"],
+    ["#30cfd0", "#330867", "#ffd6ff", "#10002b"], ["#ff5f6d", "#ffc371", "#fff1e6", "#590d22"]
+  ];
+  function paint(i, size = 160) {
+    const [top, mid, sun, land] = PALETTES[i % PALETTES.length];
+    const c = document.createElement("canvas"); c.width = c.height = size;
+    const x = c.getContext("2d");
+    const g = x.createLinearGradient(0, 0, 0, size); g.addColorStop(0, top); g.addColorStop(.7, mid); x.fillStyle = g; x.fillRect(0, 0, size, size);
+    const sx = size * (.25 + ((i * 37) % 50) / 100), sy = size * (.3 + ((i * 13) % 20) / 100);
+    const sg = x.createRadialGradient(sx, sy, 0, sx, sy, size * .22); sg.addColorStop(0, sun); sg.addColorStop(1, "transparent");
+    x.fillStyle = sg; x.fillRect(0, 0, size, size);
+    x.fillStyle = land; x.beginPath(); x.moveTo(0, size);
+    for (let k = 0; k <= 8; k++) x.lineTo(k * size / 8, size * (.68 + .1 * Math.sin(i * 1.7 + k * 1.3)));
+    x.lineTo(size, size); x.fill();
+    x.globalAlpha = .35; x.fillStyle = "#000"; x.beginPath(); x.moveTo(0, size);
+    for (let k = 0; k <= 8; k++) x.lineTo(k * size / 8, size * (.8 + .06 * Math.cos(i + k)));
+    x.lineTo(size, size); x.fill();
+    return c.toDataURL("image/jpeg", .82);
+  }
+  // AI-generated sample photos (FLUX.1-schnell) are embedded here by embed_photos.py;
+  // until then the mockups use the painted landscapes above
+  const REAL = [/*PHOTOS:START*//*PHOTOS:END*/];
+  const PHOTOS = REAL.length ? Array.from({ length: 24 }, (_, i) => REAL[i % REAL.length])
+                             : Array.from({ length: 24 }, (_, i) => paint(i));
+
+  /* ---- App icon: the real rainbow glass-cloud icon, embedded ---- */
+  const LOGO = "data:image/png;base64,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";
+  function drawLogo(cv) {
+    const im = new Image();
+    im.onload = () => cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+    im.src = LOGO;
+  }
+  document.querySelectorAll("canvas.logo").forEach(drawLogo);
+
+  /* ---- Fill the mock app ---- */
+  const grid = document.getElementById("mockgrid");
+  for (let i = 0; i < 18; i++) {
+    const t = document.createElement("i");
+    t.style.backgroundImage = `url(${PHOTOS[i]})`;
+    if ([2, 7, 11, 16].includes(i)) t.className = "v";
+    if ([4, 9].includes(i)) t.classList.add("in");
+    grid.appendChild(t);
+  }
+  document.querySelectorAll(".app .amb i").forEach((el, n) => {
+    el.style.backgroundImage = `url(${PHOTOS[[0, 4, 9][n]]})`;
+    el.style.top = `${n * 34 - 8}%`; el.style.left = `${n % 2 ? -20 : -40}%`;
+  });
+  const fill = (id, n, off, cls) => {
+    const row = document.getElementById(id);
+    for (let i = 0; i < n; i++) { const t = document.createElement("i"); t.style.backgroundImage = `url(${PHOTOS[(i + off) % 24]})`; if (cls && cls(i)) t.style.boxShadow = "0 0 0 2.5px var(--link)"; row.appendChild(t); }
+  };
+  fill("cloudrow", 16, 3);
+  fill("sheetrow", 9, 14);
+  fill("selectrow", 8, 10, i => i % 3 === 1);
+  const bd = document.getElementById("basketdemo");
+  [5, 12, 1, 20].forEach(n => { const t = document.createElement("i"); t.style.backgroundImage = `url(${PHOTOS[n]})`; bd.insertBefore(t, bd.firstChild); });
+
+  /* ---- Lens displacement map (identical to the app's) ---- */
+  (function () {
+    const N = 256, c = document.createElement("canvas"); c.width = c.height = N;
+    const ctx = c.getContext("2d"), img = ctx.createImageData(N, N);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const nx = (x + .5) / N * 2 - 1, ny = (y + .5) / N * 2 - 1;
+      const r = Math.pow(Math.pow(Math.abs(nx), 4) + Math.pow(Math.abs(ny), 4), .25);
+      const t = Math.min(1, Math.max(0, (r - .5) / .5)), k = t * t * (3 - 2 * t);
+      const i = (y * N + x) * 4;
+      img.data[i] = 128 - 127 * nx * k; img.data[i + 1] = 128 - 127 * ny * k; img.data[i + 2] = 128; img.data[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    document.getElementById("lens-map").setAttribute("href", c.toDataURL());
+  })();
+
+  /* ---- Scroll story: hero straightens, problem lines light up ---- */
+  const mock = document.getElementById("mock");
+  const lines = [...document.querySelectorAll(".problem .line")];
+  let ticking = false;
+  function onScroll() {
+    ticking = false;
+    const vh = innerHeight;
+    if (!reduce) {
+      const r = mock.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * .9)));
+      mock.style.setProperty("--p", p.toFixed(3));
+    }
+    lines.forEach(l => {
+      const r = l.getBoundingClientRect(), mid = r.top + r.height / 2;
+      const o = mid < vh * .62 ? 1 : mid < vh * .9 ? .28 + .72 * (vh * .9 - mid) / (vh * .28) : .28;
+      l.style.setProperty("--o", o.toFixed(2));
+    });
+  }
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---- Ease cards up as they arrive (only those below the fold; all stay readable) ---- */
+  if (!reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.remove("pre"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".rise").forEach(el => {
+      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); }
+    });
+  }
+
+  /* ---- Glass lab: drag the lens, tune refraction and blur ---- */
+  const lab = document.getElementById("lab"), lens = document.getElementById("lens");
+  let pos = { x: .5, y: .5 }, drag = null;
+  function place() {
+    const W = lab.clientWidth, H = lab.clientHeight, w = lens.offsetWidth, h = lens.offsetHeight;
+    pos.x = Math.min(1 - w / 2 / W, Math.max(w / 2 / W, pos.x)); pos.y = Math.min(1 - h / 2 / H, Math.max(h / 2 / H, pos.y));
+    lens.style.left = pos.x * 100 + "%"; lens.style.top = pos.y * 100 + "%";
+  }
+  lens.addEventListener("pointerdown", e => { drag = { sx: e.clientX, sy: e.clientY, px: pos.x, py: pos.y }; lens.setPointerCapture(e.pointerId); });
+  lens.addEventListener("pointermove", e => {
+    if (!drag) return;
+    pos.x = drag.px + (e.clientX - drag.sx) / lab.clientWidth; pos.y = drag.py + (e.clientY - drag.sy) / lab.clientHeight; place();
+  });
+  lens.addEventListener("pointerup", () => drag = null);
+  lens.addEventListener("keydown", e => {
+    const d = { ArrowLeft: [-.04, 0], ArrowRight: [.04, 0], ArrowUp: [0, -.06], ArrowDown: [0, .06] }[e.key];
+    if (d) { e.preventDefault(); pos.x += d[0]; pos.y += d[1]; place(); }
+  });
+  addEventListener("resize", place);
+  // drift gently on its own until touched, so the refraction is visible even without interaction
+  let t0 = performance.now(), touched = false;
+  lens.addEventListener("pointerdown", () => touched = true, { once: true });
+  lens.addEventListener("keydown", () => touched = true, { once: true });
+  (function idle(now) {
+    if (touched || reduce) return;
+    const t = (now - t0) / 1000;
+    pos.x = .5 + .18 * Math.sin(t * .45); pos.y = .5 + .12 * Math.sin(t * .7); place();
+    requestAnimationFrame(idle);
+  })(t0);
+
+  /* ---- Waitlist: copy chips, optional direct form link ---- */
+  const WAITLIST_FORM_URL = "";  // set to a 腾讯问卷 / 飞书表单 link to show the direct sign-up button
+  if (WAITLIST_FORM_URL) { document.getElementById("formlink").href = WAITLIST_FORM_URL; document.getElementById("formalt").hidden = false; }
+  document.querySelectorAll("[data-copy]").forEach(btn => btn.addEventListener("click", async () => {
+    const el = document.getElementById(btn.dataset.copy);
+    try {
+      await navigator.clipboard.writeText(el.textContent);
+      btn.textContent = "已复制"; btn.classList.add("done");
+      setTimeout(() => { btn.textContent = "复制"; btn.classList.remove("done"); }, 1600);
+    } catch {
+      const r = document.createRange(); r.selectNodeContents(el);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "已选中，按 Ctrl+C";
+    }
+  }));
+
+  const refract = document.getElementById("refract"), blur = document.getElementById("blur");
+  refract.addEventListener("input", () => { document.getElementById("lens-disp").setAttribute("scale", refract.value); document.getElementById("refract-out").textContent = refract.value; });
+  blur.addEventListener("input", () => { lens.style.setProperty("--blur", blur.value + "px"); document.getElementById("blur-out").textContent = blur.value; });
+})();
+</script>
+</body></html>
