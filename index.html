@@ -241,7 +241,9 @@ nav .links a:hover { color: #fff; text-decoration: none; }
 .lab .b2 { width: 40%; aspect-ratio: 1; right: -4%; top: 6%; background: radial-gradient(circle at 40% 40%, #64d2ff, #0a84ff 60%, transparent 70%); animation: float2 17s ease-in-out infinite alternate; }
 .lab .b3 { width: 38%; aspect-ratio: 1; left: 30%; bottom: -26%; background: radial-gradient(circle at 50% 40%, #30d158, #0e7a3a 60%, transparent 70%); animation: float1 19s ease-in-out infinite alternate-reverse; }
 .lab .stripes { position: absolute; inset: 0; background: repeating-linear-gradient(115deg, rgba(255,255,255,.07) 0 2px, transparent 2px 26px); }
-.lab .word { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font: 900 clamp(48px, 11vw, 140px)/1 var(--display); color: rgba(255,255,255,.9); letter-spacing: -.04em; white-space: nowrap; }
+.lab .word { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .22em;
+  font: 900 clamp(44px, 10vw, 128px)/1 var(--display); color: rgba(255,255,255,.92); letter-spacing: -.02em; white-space: nowrap; }
+.lab .word canvas { width: 1.05em; height: 1.05em; filter: drop-shadow(0 10px 30px rgba(0,0,0,.35)); }
 @keyframes float1 { to { transform: translate(14%, 10%) scale(1.08); } }
 @keyframes float2 { to { transform: translate(-12%, 14%) scale(.94); } }
 .lens { position: absolute; left: 50%; top: 50%; width: clamp(180px, 34%, 340px); height: clamp(90px, 15vw, 150px); margin: calc(clamp(90px, 15vw, 150px) / -2) 0 0 calc(clamp(180px, 34%, 340px) / -2);
@@ -735,8 +737,8 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
     <div class="lab" id="lab">
       <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
       <div class="stripes"></div>
-      <div class="word">图库 2026</div>
-      <div class="lens" id="lens" role="slider" tabindex="0" aria-label="可拖动的液态玻璃，方向键移动"></div>
+      <div class="word"><canvas class="logo" width="256" height="256" aria-hidden="true"></canvas>爱果相册</div>
+      <div class="lens" id="glasslens" role="slider" tabindex="0" aria-label="可拖动的液态玻璃，方向键移动"></div>
       <span class="hint">拖动玻璃 · 方向键也可以</span>
     </div>
     <div class="controls">
@@ -970,7 +972,8 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
   }
 
   /* ---- Glass lab: drag the lens, tune refraction and blur ---- */
-  const lab = document.getElementById("lab"), lens = document.getElementById("lens");
+  // the SVG filter owns id="lens", so the draggable glass has its own id
+  const lab = document.getElementById("lab"), lens = document.getElementById("glasslens");
   let pos = { x: .5, y: .5 }, drag = null;
   function place() {
     const W = lab.clientWidth, H = lab.clientHeight, w = lens.offsetWidth, h = lens.offsetHeight;
