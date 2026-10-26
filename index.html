@@ -389,6 +389,70 @@ nav .links a:hover { color: var(--link); }
 
 footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 @media (prefers-reduced-motion: reduce) { .aurora i { animation: none; } }
+
+/* ================= Real screenshots, reel, scroll tour, motion ================= */
+.device { position: relative; border-radius: 18px; overflow: hidden; background: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.8), 0 0 0 9px rgba(255,255,255,.35), 0 50px 120px rgba(40,50,110,.30), 0 8px 24px rgba(40,50,110,.12); }
+.device img { display: block; width: 100%; height: auto; }
+.chip-float { position: absolute; z-index: 3; display: flex; flex-direction: column; gap: 2px; padding: 12px 18px; border-radius: 20px;
+  background: rgba(255,255,255,.62); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+  box-shadow: var(--glass-shadow); transform: translateY(var(--y, 0px)); will-change: transform; text-align: left; }
+.chip-float b { font-size: 15px; }
+.chip-float span { font-size: 12px; color: var(--dim); }
+.chip-float.c1 { left: -2%; top: 22%; } .chip-float.c2 { right: -3%; top: 46%; } .chip-float.c3 { left: 6%; bottom: 4%; }
+@media (max-width: 760px) { .chip-float { display: none; } }
+
+.reel { padding-block: 70px 10px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.reel-track { display: flex; gap: 14px; width: max-content; animation: reel 70s linear infinite; }
+.reel:hover .reel-track { animation-play-state: paused; }
+.reel-track img { width: 168px; height: 210px; object-fit: cover; border-radius: 18px; box-shadow: 0 10px 30px rgba(40,50,110,.15); transition: transform .4s cubic-bezier(.3,1.5,.4,1); }
+.reel-track img:nth-child(3n) { height: 168px; margin-top: 21px; }
+.reel-track img:hover { transform: scale(1.06) rotate(-1deg); }
+@keyframes reel { to { transform: translateX(-50%); } }
+
+.tour { padding-block: 60px 120px; }
+.tour h2 { font-size: clamp(36px, 6vw, 72px); font-weight: 900; letter-spacing: -.035em; line-height: 1.05; margin: 16px 0 14px; }
+.tour-lede { color: var(--dim); max-width: 56ch; margin-bottom: 30px; }
+.tour-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); gap: 56px; }
+.tstep { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; opacity: .3; transform: translateX(-8px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.tstep.on { opacity: 1; transform: none; }
+.tnum { font: 600 14px var(--mono); color: var(--link); letter-spacing: .1em; }
+.tstep h3 { font-size: clamp(26px, 2.6vw, 34px); font-weight: 900; letter-spacing: -.02em; line-height: 1.2; margin: 12px 0 14px; }
+.tstep p { color: #3a3a3f; font-size: 17px; max-width: 34ch; }
+.tpoints { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-direction: column; gap: 9px; }
+.tpoints li { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; color: #3a3a3f; }
+.tpoints li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(135deg, var(--sky), #bf5af2); }
+.tinline { display: none; }
+.tour-stage { position: sticky; top: calc(52px + 9vh); height: 76vh; align-self: start; display: flex; flex-direction: column; justify-content: center; }
+.tour-glow { position: absolute; inset: 12% 6%; border-radius: 50%; filter: blur(80px); opacity: .7; background: var(--glow, #7fd3ff); transition: background .8s ease; z-index: -1; }
+.tour-device { position: relative; aspect-ratio: 16 / 10; border-radius: 18px; overflow: hidden; background: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.85), 0 0 0 8px rgba(255,255,255,.35), 0 40px 100px rgba(40,50,110,.28);
+  transform: perspective(1600px) rotateY(calc(var(--tilt, 0) * -6deg)) rotateX(calc(var(--tilt, 0) * 3deg)); transition: transform .2s linear; }
+.tour-device img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06);
+  filter: blur(6px); transition: opacity .7s ease, transform 1s cubic-bezier(.2,.8,.2,1), filter .7s ease; }
+.tour-device img.on { opacity: 1; transform: none; filter: none; }
+.tour-dots { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
+.tour-dots i { width: 8px; height: 8px; border-radius: 99px; background: rgba(24,28,60,.18); transition: width .4s cubic-bezier(.3,1.5,.4,1), background .4s; }
+.tour-dots i.on { width: 28px; background: var(--link); }
+@media (max-width: 900px) {
+  .tour-grid { grid-template-columns: minmax(0, 1fr); }
+  .tour-stage { display: none; }
+  .tstep { min-height: 0; opacity: 1; transform: none; margin-bottom: 64px; }
+  .tinline { display: block; width: 100%; height: auto; border-radius: 14px; margin-top: 22px; box-shadow: 0 20px 50px rgba(40,50,110,.2); }
+}
+
+/* cursor spotlight on glass cards */
+.spot { position: relative; }
+.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.55), transparent 45%); mix-blend-mode: soft-light; }
+.spot:hover::after { opacity: 1; }
+.rise { transition-delay: var(--d, 0s); }
+@media (prefers-reduced-motion: reduce) {
+  .reel-track { animation: none; }
+  .tour-device { transform: none; }
+  .tour-device img, .tstep { transition: none; }
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -403,7 +467,7 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
   <div class="wrap">
     <a class="brand" href="#top"><canvas class="logo" width="64" height="64" aria-hidden="true"></canvas>爱果相册 <span style="color:var(--dim);font-weight:500">Orchard</span></a>
     <div class="links">
-      <a href="#problem">问题</a><a href="#market">市场</a><a href="#features">功能</a><a href="#compare">对比</a><a href="#design">设计</a><a href="#tech">原理</a><a href="#roadmap">路线图</a><a class="keep" href="#join">申请内测</a>
+      <a href="#tour">导览</a><a href="#problem">问题</a><a href="#market">市场</a><a href="#features">功能</a><a href="#compare">对比</a><a href="#design">设计</a><a href="#tech">原理</a><a href="#roadmap">路线图</a><a class="keep" href="#join">申请内测</a>
     </div>
   </div>
 </nav>
@@ -413,39 +477,22 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
     <p class="eyebrow">为 AI 自动剪辑视频而生 · for Windows</p>
     <h1>iPhone 的照片，<br><span class="grad">在 Windows 上顺手了。</span></h1>
     <p class="lede">你的 iPhone 素材果园，AI 帮你摘下最好的那几秒。按月份浏览全部 iCloud 照片和视频，缩略图秒开、原片不用下载。挑好素材放进剪辑篮，Claude 直接把它变成剪映草稿。</p>
-    <div class="ctas"><a class="btn primary" href="#join">申请内测</a><a class="btn ghost" href="#features">看看它能做什么 ›</a></div>
+    <div class="ctas"><a class="btn primary" href="#join">申请内测</a><a class="btn ghost" href="#tour">看看它怎么工作 ›</a></div>
   </div>
   <div class="wrap stage" style="position:relative">
     <div class="mock-wrap" id="mock">
       <div class="halo"></div>
-      <div class="app" role="img" aria-label="爱果相册界面示意：左侧液态玻璃侧边栏，右侧按月份排列的照片网格">
-        <div class="titlebar"><canvas class="logo" width="64" height="64"></canvas>爱果相册</div>
-        <div class="amb"><i></i><i></i><i></i></div>
-        <div class="side">
-          <b><canvas class="logo" width="64" height="64"></canvas>爱果相册</b>
-          <small>照片</small>
-          <span class="on">图库<em>85,025</em></span>
-          <span>视频<em>14,737</em></span>
-          <span>照片<em>70,288</em></span>
-          <small>剪辑</small>
-          <span>剪辑篮<em>5</em></span>
-          <small>时间</small>
-          <span>2026 · 10月<em>390</em></span>
-          <span>9月<em>32</em></span>
-          <span>8月<em>272</em></span>
-        </div>
-        <div class="sel">选择</div>
-        <div class="main">
-          <h4>图库</h4>
-          <div class="sub">2018年6月 – 2026年10月 · 85,025 项</div>
-          <h5>2026年10月</h5>
-          <div class="grid" id="mockgrid"></div>
-        </div>
-        <div class="seg"><span>小</span><span class="on">中</span><span>大</span></div>
-      </div>
+      <div class="device"><img src="shots/01_library.webp" alt="爱果相册的图库：左侧液态玻璃侧边栏，右侧按月份排列的照片和视频" width="1800" height="1125"></div>
+      <div class="chip-float c1" data-speed="-0.10"><b>相机拍摄</b><span>自动分类</span></div>
+      <div class="chip-float c2" data-speed="0.08"><b>关键帧</b><span>一张图看完视频</span></div>
+      <div class="chip-float c3" data-speed="-0.06"><b>剪辑篮</b><span>→ 剪映草稿</span></div>
     </div>
   </div>
 </header>
+
+<section class="reel" aria-label="素材长廊：AI 生成的示例照片">
+  <div class="reel-track" id="reel"><img src="shots/reel/01.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/02.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/03.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/04.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/05.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/06.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/07.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/08.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/09.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/10.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/11.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/12.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/13.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/14.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/15.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/16.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/17.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/18.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/01.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/02.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/03.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/04.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/05.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/06.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/07.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/08.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/09.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/10.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/11.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/12.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/13.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/14.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/15.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/16.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/17.webp" alt="" loading="lazy" width="168" height="210"><img src="shots/reel/18.webp" alt="" loading="lazy" width="168" height="210"></div>
+</section>
 
 <section class="problem" id="problem">
   <div class="wrap">
@@ -465,6 +512,81 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
       <div class="cell rise"><div class="big">1.5<small>秒</small></div><p class="cap">缩略图请求最长等待，绝不卡住界面</p></div>
       <div class="cell rise"><div class="big">2<small>分钟</small></div><p class="cap">新同步的照片自动出现在图库里</p></div>
       <div class="cell rise"><div class="big">127<small>.0.0.1</small></div><p class="cap">只在本机运行，任何内容都不上传</p></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="tour" id="tour">
+  <div class="wrap">
+    <p class="eyebrow">功能导览</p>
+    <h2>往下滚，<br>看它怎么工作。</h2>
+    <p class="tour-lede">下面都是爱果相册真实运行的界面截图。为了保护隐私，截图用的是 AI 生成的示例图库。</p>
+    <div class="tour-grid">
+      <div class="tour-steps">
+      <article class="tstep" data-i="0" data-glow="#7fd3ff">
+        <span class="tnum">01</span>
+        <h3>按月份，翻遍整个 iCloud 图库</h3>
+        <p>缩略图直接取自 iCloud 的缓存，十万张照片随手翻，一张原片都不用下载。左边的液态玻璃侧边栏，一键跳到任何一个月。</p>
+        <ul class="tpoints"><li>零下载浏览</li><li>新照片 2 分钟内自动出现</li><li>小 · 中 · 大 三档缩略图</li></ul>
+        <img class="tinline" src="shots/01_library.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="1" data-glow="#ffc36b">
+        <span class="tnum">02</span>
+        <h3>一眼分清拍的、截的、收到的</h3>
+        <p>按文件名规律、画面比例和原片里的相机信息，自动分成相机拍摄、截图、录屏、存下的 / 收到的。剪片子时，只在真正拍的素材里找。</p>
+        <ul class="tpoints"><li>5 类来源自动识别</li><li>截图按屏幕比例识别</li><li>下载原片后用相机信息校正</li></ul>
+        <img class="tinline" src="shots/02_sources.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="2" data-glow="#b9a8ff">
+        <span class="tnum">03</span>
+        <h3>点开，才下载那一张</h3>
+        <p>大图模式铺满窗口，玻璃控件浮在照片上。只有点开的这一张会从 iCloud 下载，← → 键切换，Esc 返回。</p>
+        <ul class="tpoints"><li>原片按需下载</li><li>iPhone HEVC 视频直接播放</li><li>一键用默认程序打开</li></ul>
+        <img class="tinline" src="shots/03_viewer.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="3" data-glow="#8ee6b0">
+        <span class="tnum">04</span>
+        <h3>一张图，看完一条视频</h3>
+        <p>每条视频抽 9 帧拼成 3×3 小样，标好时间点，同时读出时长、分辨率、机型和拍摄地点。你看一眼就知道拍了什么，AI 也一样。</p>
+        <ul class="tpoints"><li>9 帧关键帧小样</li><li>时长 · 分辨率 · 机型 · 地点</li><li>按 K 键随时打开</li></ul>
+        <img class="tinline" src="shots/04_keyframes.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="4" data-glow="#ffb3d9">
+        <span class="tnum">05</span>
+        <h3>连续点选，一口气挑完</h3>
+        <p>点右上角「选择」，之后每点一张就加入剪辑篮，勾选立刻显示，不用等任何加载。</p>
+        <ul class="tpoints"><li>多选不卡顿</li><li>勾选状态实时同步</li><li>Esc 退出选择</li></ul>
+        <img class="tinline" src="shots/05_select.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="5" data-glow="#a9d4ff">
+        <span class="tnum">06</span>
+        <h3>说一句话，剪映草稿就好了</h3>
+        <p>挑好的素材都在剪辑篮里。跟 Claude 说「用剪辑篮里的素材剪一条」，它读取清单、取回原片，在剪映里生成一份能继续精修的草稿。</p>
+        <ul class="tpoints"><li>清单自动保存</li><li>AI 自动取回原片</li><li>草稿可在剪映继续改</li></ul>
+        <img class="tinline" src="shots/06_basket.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      <article class="tstep" data-i="6" data-glow="#c9b8ff">
+        <span class="tnum">07</span>
+        <h3>白天黑夜，都是液态玻璃</h3>
+        <p>界面跟随系统切换深浅色，侧边栏后面是你正在看的那个月的照片，放大、模糊、缓慢流动。</p>
+        <ul class="tpoints"><li>跟随系统深浅色</li><li>照片氛围光</li><li>iOS 26 风格控件</li></ul>
+        <img class="tinline" src="shots/08_dark.webp" alt="" loading="lazy" width="1800" height="1125">
+      </article>
+      </div>
+      <div class="tour-stage" aria-hidden="true">
+        <div class="tour-glow" id="tourglow"></div>
+        <div class="tour-device" id="tourdevice">
+          <img src="shots/01_library.webp" alt="按月份，翻遍整个 iCloud 图库" data-i="0" width="1800" height="1125" class="on" loading="eager">
+          <img src="shots/02_sources.webp" alt="一眼分清拍的、截的、收到的" data-i="1" width="1800" height="1125" loading="lazy">
+          <img src="shots/03_viewer.webp" alt="点开，才下载那一张" data-i="2" width="1800" height="1125" loading="lazy">
+          <img src="shots/04_keyframes.webp" alt="一张图，看完一条视频" data-i="3" width="1800" height="1125" loading="lazy">
+          <img src="shots/05_select.webp" alt="连续点选，一口气挑完" data-i="4" width="1800" height="1125" loading="lazy">
+          <img src="shots/06_basket.webp" alt="说一句话，剪映草稿就好了" data-i="5" width="1800" height="1125" loading="lazy">
+          <img src="shots/08_dark.webp" alt="白天黑夜，都是液态玻璃" data-i="6" width="1800" height="1125" loading="lazy">
+        </div>
+        <div class="tour-dots" id="tourdots"><i data-i="0" class="on"></i><i data-i="1"></i><i data-i="2"></i><i data-i="3"></i><i data-i="4"></i><i data-i="5"></i><i data-i="6"></i></div>
+      </div>
     </div>
   </div>
 </section>
@@ -780,7 +902,7 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
 
   /* ---- Fill the mock app ---- */
   const grid = document.getElementById("mockgrid");
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; grid && i < 18; i++) {
     const t = document.createElement("i");
     t.style.backgroundImage = `url(${PHOTOS[i]})`;
     if ([2, 7, 11, 16].includes(i)) t.className = "v";
@@ -793,6 +915,7 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
   });
   const fill = (id, n, off, cls) => {
     const row = document.getElementById(id);
+    if (!row) return;
     for (let i = 0; i < n; i++) { const t = document.createElement("i"); t.style.backgroundImage = `url(${PHOTOS[(i + off) % 24]})`; if (cls && cls(i)) t.style.boxShadow = "0 0 0 2.5px var(--link)"; row.appendChild(t); }
   };
   fill("cloudrow", 16, 3);
@@ -875,6 +998,51 @@ footer { background: rgba(255,255,255,.35); -webkit-backdrop-filter: blur(12px);
     pos.x = .5 + .18 * Math.sin(t * .45); pos.y = .5 + .12 * Math.sin(t * .7); place();
     requestAnimationFrame(idle);
   })(t0);
+
+
+  /* ---- Hero chips drift at their own speed; the scroll tour follows the step in mid-screen ---- */
+  const chips = [...document.querySelectorAll(".chip-float")];
+  const tsteps = [...document.querySelectorAll(".tstep")];
+  const timgs = [...document.querySelectorAll("#tourdevice img")];
+  const tdots = [...document.querySelectorAll("#tourdots i")];
+  const tdev = document.getElementById("tourdevice"), tglow = document.getElementById("tourglow");
+  let tcur = -1;
+  function setStep(i) {
+    if (i === tcur) return; tcur = i;
+    tsteps.forEach((s, k) => s.classList.toggle("on", k === i));
+    timgs.forEach((im, k) => im.classList.toggle("on", k === i));
+    tdots.forEach((d, k) => d.classList.toggle("on", k === i));
+    if (tglow) tglow.style.setProperty("--glow", tsteps[i].dataset.glow);
+  }
+  function motion() {
+    const vh = innerHeight;
+    if (!reduce) chips.forEach(c => c.style.setProperty("--y", (scrollY * parseFloat(c.dataset.speed)).toFixed(1) + "px"));
+    if (!tsteps.length) return;
+    let best = 0, bestD = Infinity;
+    tsteps.forEach((s, k) => { const r = s.getBoundingClientRect(); const d = Math.abs(r.top + r.height / 2 - vh / 2); if (d < bestD) { bestD = d; best = k; } });
+    setStep(best);
+    if (tdev && !reduce) {
+      const r = tsteps[best].getBoundingClientRect();
+      const t = Math.max(-1, Math.min(1, (vh / 2 - (r.top + r.height / 2)) / (r.height / 2)));
+      tdev.style.setProperty("--tilt", t.toFixed(3));
+    }
+  }
+  let mtick = false;
+  addEventListener("scroll", () => { if (!mtick) { mtick = true; requestAnimationFrame(() => { mtick = false; motion(); }); } }, { passive: true });
+  addEventListener("resize", motion);
+  motion();
+
+  /* ---- Cursor spotlight on glass cards; staggered reveal inside each group ---- */
+  document.querySelectorAll(".card, .fact, .lane, .who > div").forEach(el => {
+    el.classList.add("spot");
+    el.addEventListener("pointermove", e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      el.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+  });
+  document.querySelectorAll(".bento, .facts, .lanes, .steps, .layers, .who").forEach(g =>
+    [...g.querySelectorAll(":scope > .rise")].forEach((el, k) => el.style.setProperty("--d", (k * 0.08).toFixed(2) + "s")));
 
   /* ---- Waitlist: copy chips, optional direct form link ---- */
   const WAITLIST_FORM_URL = "";  // set to a 腾讯问卷 / 飞书表单 link to show the direct sign-up button
